@@ -4,7 +4,7 @@
 \documentclass[twoside]{article}
 
 \usepackage[math]{kurier}
-\usepackage[sc]{mathpazo}                   
+\usepackage[sc]{mathpazo}
 \renewcommand{\sfdefault}{kurier}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
@@ -36,7 +36,7 @@
 \renewcommand{\thetable}{\thelecnum.\arabic{table}}
 
 
-\newcommand{\lecture}[4]{
+\newcommand{\lecture}[3]{
    \pagestyle{myheadings}
    \thispagestyle{plain}
    \newpage
@@ -51,7 +51,7 @@
        \vspace{4mm}
        \hbox to 6.28in { {\sffamily{\Large \hfill Lecture #1: #2  \hfill}} }
        \vspace{2mm}
-       \hbox to 6.28in { {\it \hfill Scribes: #4} }
+       %\hbox to 6.28in { {\it \hfill Scribes: #4} }
       \vspace{2mm}}
    }
    \end{center}
@@ -60,27 +60,20 @@
    \vspace*{4mm}
 }
 
-% Sign up for work roles:
-% 1. Half Writer: Hans Magnus
-% 1. Half Illustrator: Stephen Spears
-% 2. Half Writer: Chris Covert 
-% 2. Half Illustrator: Chris Covert
-% Editor: Chris Covert
-
 
 \begin{document}
 
-\lecture{1}{Mobile Robot Kinematics}{}{S. Spears, C. Covert, A. Hosler, Z. Chase, and H.M. Ewald}
+\lecture{1}{Mobile Robot Kinematics}{}{}
 
 The following notes summarize the first lecture of AA 274: Principles of Robotic Autonomy. This lecture covers two introductory materials (Mobile Robot Kinematics and Motion Control), is organized into meaningful sections, and is annotated with formal definitions, graphics and literature references.
 
 \section*{Mobile Robot Kinematics}
 
-In this class, an emphasis will be placed on mobile robots and vehicles as opposed to stationary machines. With mobile robots, the focus is on motion and trajectories rather than configurations and interactions with the environment. As such, we need to consider the dynamics and kinematic constraints that govern the motion of each robot. 
+In this class, an emphasis will be placed on mobile robots and vehicles as opposed to stationary machines. With mobile robots, the focus is on motion and trajectories rather than configurations and interactions with the environment. As such, we need to consider the dynamics and kinematic constraints that govern the motion of each robot.
 
 \subsection*{Kinematic Constraints}
 
-The motion state, or configuration, of a robot at any point in time is given by the configuration vector \cite{ssvo}: 
+The motion state, or configuration, of a robot at any point in time is given by the configuration vector \cite{ssvo}:
 
 $$
 \xi = [\xi_1, \xi_2, \ ... \  \xi_n]^T
@@ -96,8 +89,8 @@ $$
 $$
 
 \begin{frm-def}[Holonomic Constraints]
-A kinematic constraint is holonomic if it can be expressed as: 
-$$ 
+A kinematic constraint is holonomic if it can be expressed as:
+$$
 h_i(\xi) = 0,\;\;\textup{for}\;\;i = 1,...,k < n
 $$
 Each holonomic constraint reduces the number of degrees of freedom of the robot's configuration by 1 (i.e. it reduces the space of accessible configurations of the vehicle to an \textit{n-k} dimensional subset.
@@ -106,8 +99,8 @@ Each holonomic constraint reduces the number of degrees of freedom of the robot'
 \newpage
 
 \begin{frm-def}[Kinematic Constraints]
-A mobile robot system with $n$ degrees of freedom has kinematic constraints that can be described in a general way as follows: 
-$$  
+A mobile robot system with $n$ degrees of freedom has kinematic constraints that can be described in a general way as follows:
+$$
 a_i (\xi, \dot{\xi})=0,\;\;\textup{for}\;\;i = 1,...,k < n
 $$
 A subcategory of kinematic constraints can be expressed in the Pfaffian form:
@@ -120,11 +113,11 @@ We can see that a holonomic constraint always also imposes a kinematic constrain
 $$
 h_i(\xi) = 0 \Rightarrow \frac{d\,h_i(\xi)\, }{dt} = \frac{\partial\,h_i(\xi)}{\partial \xi} \dot{\xi} = 0,\;\;\textup{for}\;\;i = 1,...,k < n
 $$
-However, the converse is generally not true \cite{ssvo}. 
+However, the converse is generally not true \cite{ssvo}.
 
 \subsection*{Nonholonomic Constraints}
 
-The general kinematic constraint in the form $ a_i (\xi, \dot{\xi}) $ can either be a holonomic or a nonholonomic constraint. It is holonomic if it can be integrated to the holonomic form of $ h_i(\xi) = 0 $. Otherwise, it is nonholonomic \cite{ssvo}. 
+The general kinematic constraint in the form $ a_i (\xi, \dot{\xi}) $ can either be a holonomic or a nonholonomic constraint. It is holonomic if it can be integrated to the holonomic form of $ h_i(\xi) = 0 $. Otherwise, it is nonholonomic \cite{ssvo}.
 
 In practice, both types of constraints affect the system differently: holonomic constraints reduce accessibility of the robot by limiting the robot configuration to a lower-dimensional subspace (each constraint removes one degree of freedom), whereas nonholonomic constraints do not limit accessibility at all; instead, they constrain the possible velocities at each configuration state. In particular, Pfaffian form constraints $ a_i(\xi) \cdot \dot{\xi} = 0 $ allow only velocities from the null space of $ a_i (\xi) $.
 
@@ -143,7 +136,7 @@ We consider a disk rolling on its edge to demonstrate a nonholonomic system. Lik
 To formulate this constraint mathematically, we express the two orthogonal directions like this:
 
 \[ d_{long} =
-\begin{pmatrix} \cos \theta \\ \sin \theta \end{pmatrix} 
+\begin{pmatrix} \cos \theta \\ \sin \theta \end{pmatrix}
 \perp
 d_{lat} =
 \begin{pmatrix} \sin \theta \\ -\cos \theta \end{pmatrix}
@@ -152,19 +145,19 @@ d_{lat} =
 We can enforce the no slip condition with a dot product statement between the velocity vector and $ d_{lat} $ as follows:
 
 $$
-[\dot{x},  \dot{y}] \begin{pmatrix} \sin \theta \\ -\cos \theta \end{pmatrix} = 0 \iff 
+[\dot{x},  \dot{y}] \begin{pmatrix} \sin \theta \\ -\cos \theta \end{pmatrix} = 0 \iff
 [\sin \theta, -\cos \theta, 0] \dot{\xi} = 0
 $$
 
-This is a nonholonomic constraint in Pfaffian form. In this system there is no loss of accessibility. 
+This is a nonholonomic constraint in Pfaffian form. In this system there is no loss of accessibility.
 
-The example shows that wheeled vehicles are generally nonholonomic, meaning they can reach any configuration $[x,y,\theta]^T$ but will have constrained trajectories to get there. A common holonomic system, on the other hand, would be a robotic arm that cannot reach any possible configuration due to mechanical interactions. In this case, its joints may constrain it such that some configurations are unreachable. 
+The example shows that wheeled vehicles are generally nonholonomic, meaning they can reach any configuration $[x,y,\theta]^T$ but will have constrained trajectories to get there. A common holonomic system, on the other hand, would be a robotic arm that cannot reach any possible configuration due to mechanical interactions. In this case, its joints may constrain it such that some configurations are unreachable.
 
 \subsection*{Types of wheels}
 
 There are four main wheel types in mobile robotics. Since they are different in the way they constrain the robot's motion, knowing them is important to finding out the kinematic constraints and dynamic model of the vehicle.
 
-The \textbf{Standard Wheel} is the most ubiquitous of the wheel types. Its defining property is that the wheel is mounted on the robot's frame directly above the wheel's point of contact with the ground. They can either be of fixed orientation, or they can be fitted to be steerable\cite{sns}. 
+The \textbf{Standard Wheel} is the most ubiquitous of the wheel types. Its defining property is that the wheel is mounted on the robot's frame directly above the wheel's point of contact with the ground. They can either be of fixed orientation, or they can be fitted to be steerable\cite{sns}.
 
 \begin{figure}[H]
 \centering
@@ -191,11 +184,11 @@ The \textbf{Swedish Wheel} and the \textbf{Spherical wheel} are special wheel de
 
 \subsection*{Kinematic Robot Models}
 
-By putting together all the constraints that arise from the no slip conditions, we can come up with a "Kinematic Model" of our robot. While we do not have to do this in this class, to derive the kinematic model for your given robot, you would compile the no-slip constraints into a matrix, then look at the null space of that constraint matrix. This will tell you the set of possible velocities of your robot, which is the vehicle's kinematic model. We will use some simple kinematic models in this class to describe the motion of our mobile robot: 
+By putting together all the constraints that arise from the no slip conditions, we can come up with a "Kinematic Model" of our robot. While we do not have to do this in this class, to derive the kinematic model for your given robot, you would compile the no-slip constraints into a matrix, then look at the null space of that constraint matrix. This will tell you the set of possible velocities of your robot, which is the vehicle's kinematic model. We will use some simple kinematic models in this class to describe the motion of our mobile robot:
 
 \subsubsection*{"Unicycle" (a.k.a. "differential drive") Model:}
 
-This configuration type utilizes two rear standard wheels and an optional passive wheel in the front of the vehicle. In order to achieve rotation, the unicycle model makes use of differential drive by controlling the rate/direction of rotation for each wheel independently\cite{sns}. 
+This configuration type utilizes two rear standard wheels and an optional passive wheel in the front of the vehicle. In order to achieve rotation, the unicycle model makes use of differential drive by controlling the rate/direction of rotation for each wheel independently\cite{sns}.
 
 \begin{figure}[H]
 \centering
@@ -229,9 +222,9 @@ The kinematic model of tricycle robots is as follows:
 \begin{pmatrix} \cos \xi \cos \theta \\ \cos \xi \sin \theta \\ \sin \xi \\ 0 \end{pmatrix} u_1 + \begin{pmatrix} 0 \\ 0 \\ 0 \\ 1 \end{pmatrix} u_2
 \]
 
-\textbf{Warning:} A kinematic state space model should only be interpreted as a subsystem of a more general dynamical model of the robot. 
+\textbf{Warning:} A kinematic state space model should only be interpreted as a subsystem of a more general dynamical model of the robot.
 
-You control the robot by controlling actual forces and torques, not linear and angular speeds. Usually we assume that there is a black box that converts desired angular and linear velocities to actual torques on each wheel. Alternatively, we could reason directly with the dynamical model, but we won't do this until later in the class. 
+You control the robot by controlling actual forces and torques, not linear and angular speeds. Usually we assume that there is a black box that converts desired angular and linear velocities to actual torques on each wheel. Alternatively, we could reason directly with the dynamical model, but we won't do this until later in the class.
 
 \subsection*{Simplified car models}
 
@@ -267,111 +260,25 @@ $
 v= u_{1,max}\;\textup{cos}(\zeta_{max}),\;|w|\leq |v|\;\textup{tan}(\zeta_{max}) \rightarrow \textup{Dubin's car}
 $
 
-\section*{Motion Control}
-
-With an understanding of the kinematic model, the next logistical step is applying those constraint relations to control the vehicle along a path from a given initial configuration to a desired final configuration. This movement of the robot from point A to point B is referred to as \textit{Motion Control}. 
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.4\textwidth]{MotionControl}
-\caption{Simple Robot Path}
-\end{figure}
-
-The aim of this discussion, as covered in this class, will be to provide the fundamentals of optimal control and trajectory optimization, as well as to develop an appreciation for the methods of achieving those paths via open-loop, closed-loop, and two-degree-of-freedom control designs.
-
-\subsection*{Optimal Control Problem}
-
-Our formulation of the optimal control problem is makes use of a state,
-as denoted by \textit{x} instead of $\xi$, where $\xi$ is simply the configuration of the vehicle and \textit{x} is the combined state of configuration and respective velocities.
-
-Since \textit{x} may in turn denote non-zero velocity states, it may represent a dynamical model, so this problem represents a dynamics equation which may depend linearly on the state \textit{x(t)}, on the control \textit{u(t)}, and on time \textit{t} with constraints in both state and control (i.e. upper bounds on acceleration).
-
-The mathematical definition of the optimal control problem can be written as such:
-
-\begin{center}
-$
-\underset{\mathbf{u}}{min}\;\;\; h( \mathbf{x}(t_{f}),t_{f})\;+\;\int_{t_0}^{t_f}g(\mathbf{x}(t),\mathbf{u}(t),t)dt
-$
-
-$
-subject\;to\;\dot{\mathbf{x}}(t)=\mathbf{a}(\mathbf{x}(t),\mathbf{u}(t),t),\;\;with\;\;\mathbf{x}(t)\in \boldsymbol{X},\;\;\;\mathbf{u}(t)\in \boldsymbol{U} 
-$
-
-$
-where\;\boldsymbol{x}(t)\in R^{n}, \; \boldsymbol{u}(t)\in R^{m}, \;and\; \boldsymbol{x}(t_0)=\boldsymbol{x}_0
-$
-\end{center}
-
-In order to solve this problem given some initial condition, we optimize the cost function until we reach a desired final condition at $t_f$. In particular, the cost function is additive wherein the cost is (1) an integral of running cost that, at each time interval, penalizes your system for being in state x(t) and enacting control u(t), and (2) a terminal penalty cost (i.e. we might be a little bit away from our waypoints at the final time).
-
-It is important to remember that the integral is simply an additive operation, so this problem may be approached using a discretization of the integral where we add immediate stage-wise costs. With this is mind, we prefer to use this generalized model for two reasons: (1) there are a number of tasks that may be modeled by additive costs (i.e. fuel consumption, control effort, etc), and (2) it dramatically simplifies computation (linear constraint with a number of key, deep, structural results that stem from such an additive assumption).
-
-For those interested in learning more about Optimal Control Theory, a recommended reference to check out is: \textit{D. K. Kirk. Optimal Control Theory: An introduction. Dover Publications, 2004.}
-
-\subsection*{Form of Optimal Control}
-
-There exist different forms of an optimized control function, the focus of which revolve around the use of feedback in the iteration of the aforementioned cost function. For notation's sake, if our control input u*(t) represents optimality, then u*(t) is the control function that minimizes the optimization problem. 
-
-\subsubsection*{Closed-Loop Control}
-
-If your function is a function of the state and time, such a control function is referred to as a closed-loop control function: 
-
-\begin{center}
-$
-\mathbf{u}^{*}(t)=\pi(\mathbf{x}(t),t)
-$
-\end{center}
-
-The closed-loop stems from the fact that your control is a function that maps the state to a given control input. In general, closed-loop control is the most accurate form of motion control since the pairing of state and time within the feedback loop allows the vehicle to determine any error in its configuration and correct it along the way. In other words, any deviation from a determined path (i.e. disturbances from wind, slipping, etc) will be detected and corrected by the vehicle.
-
-\subsubsection*{Open-Loop Control}
-
-At the other end of the spectrum is open-loop control (cost function depends only on time and initial conditions, and does not update the state in the feedback loop):
-
-\begin{center}
-$
-\mathbf{u}^{*}(t)=\mathbf{f}(\mathbf{x}(t_0),t)
-$
-\end{center}
-
-Therefore, optimizing over open-loop is a much easier process since you optimize only over time instead of time and state (lower dimensionality). With open-loop control, however, deviations from nominal trajectory are impossible to correct.
-
-\subsubsection*{Two-Step Design}
-
-A good compromise between closed-loop and open-loop control is a two-step design where essentially your control function (A) is an additive combination between a reference open-loop control function (B) plus some reference tracking closed-loop control policy (C), a closed-loop function that keeps the system as close as possible to the nominal behavior that is a function of the current state and the tracking error (D)). This is the same concept as a feed-forward control technique.
-
-\begin{center}
-$
-\underset{A}{\underbrace{\textbf{u}^*(t)}} = \underset{B}{\underbrace{\textbf{u}_d(t)}}+\underset{C}{\underbrace{\pi}}(\textbf{x}(t),\underset{D}{\underbrace{\mathbf{x}(t)-\mathbf{x}_d(t)}})
-$
-\end{center}
-
-\subsection*{Open-Loop Control Methods (Discretization)}
-
-In particular for open-loop control, there are two broad classes of methods: indirect and direct methods. While both methods involve the steps of discretizing and optimizing the control function, the order in which those steps are completed determines which method is being applied.
-
-\subsubsection*{Indirect Method}
-
-In an indirect method, an optimal solution is found indirectly by first characterizing the necessary condition that an optimal control function should satisfy, and then solving for those optimality conditions. Therefore, this solution follows the order of "first optimize, then discretize." 
-
-\subsubsection*{Direct Method}
-
-Direct methods are the reverse of indirect methods. With an optimal control problem that is defined in continuous time, we first discretize our solution and then transcribe it into a finite dimensional, nonlinear programming (NLP) problem, which we can then solve. This is method therefore requires us to "discretize first, then optimize."
-
 \begin{thebibliography}{9}
 
-\bibitem{ssvo} 
+\bibitem{ssvo}
 B. Siciliano, L. Sciavicco, L. Villani, G. Oriolo.\textit{ Robotics: Modelling, Planning, and Control.} \\Springer, 2008 (chapter 11).
 
-\bibitem{sns} 
+\bibitem{sns}
 R. Siegwart, I. R. Nourbakhsh, D. Scaramuzza. \textit{Introduction to Autonomous Mobile Robots.} MIT Press, 2nd Edition, 2011.
- 
-\bibitem{jp} 
+
+\bibitem{jp}
 J.-P. Laumond. \textit{Robot Motion Planning and Control.} 1998 \\texttt{https://homepages.laas.fr/jpl/promotion/chap1.pdf}
 
-\bibitem{swed} 
+\bibitem{swed}
 L. Lin, H. Shih. \textit{Modeling and Adaptive Control of an Omni-Mecanum-Wheeled Robot.} \\Intelligent Control and Automation, 4, 166-179. doi: 10.4236/ica.2013.42021.
 
 \end{thebibliography}
+
+\subsubsection*{Contributors}
+Winter 2019: [Your Names Here]
+\\
+Winter 2018: S. Spears, C. Covert, A. Hosler, Z. Chase, and H.M. Ewald
 
 \end{document}
