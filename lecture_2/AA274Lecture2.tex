@@ -1,7 +1,7 @@
 \documentclass[twoside]{article}
 
 \usepackage[math]{kurier}
-\usepackage[sc]{mathpazo}                   
+\usepackage[sc]{mathpazo}
 \renewcommand{\sfdefault}{kurier}
 
 \usepackage{framed} % or, "mdframed"
@@ -42,7 +42,7 @@
        \vspace{4mm}
        \hbox to 6.28in { {\sffamily{\Large \hfill Lecture #1 #2  \hfill}} }
        \vspace{2mm}
-       \hbox to 6.28in { {\it \hfill Scribes: #4} }
+       %\hbox to 6.28in { {\it \hfill Scribes: #4} }
       \vspace{2mm}}
    }
    \end{center}
@@ -57,7 +57,7 @@
 %document
 \begin{document}
 %modify this
-\lecture{2}{The Robot Operating System (ROS)}{}{Marco Hinojosa, Ryan Loper, John McNelly, Dipti Motwani, Patrick Washington}
+\lecture{2}{The Robot Operating System (ROS)}{}
 
 \section{Introduction}
 
@@ -69,11 +69,11 @@ The earliest versions of ROS originated with the Stanford AI Robot (STAIR) proje
 
 \section{What is ROS?}
 
-Despite what its name suggests, ROS is not an operating system. The Robot Operating System can be described as a collection of tools, libraries, and conventions that aim to simplify the task of creating complex and robust robot behavior across a wide variety of platforms. At its creation, it was the combination of many existing projects such as OpenCV, Stage, Gazebo, OpenSLAM, Orocos KDL, and other ROS wrappers. Integrating ROS in one's project seldom takes more than a couple of lines of code; it can be seen simply as "gluing" components to work together. The development is mostly in a language such as Python or C++. 
+Despite what its name suggests, ROS is not an operating system. The Robot Operating System can be described as a collection of tools, libraries, and conventions that aim to simplify the task of creating complex and robust robot behavior across a wide variety of platforms. At its creation, it was the combination of many existing projects such as OpenCV, Stage, Gazebo, OpenSLAM, Orocos KDL, and other ROS wrappers. Integrating ROS in one's project seldom takes more than a couple of lines of code; it can be seen simply as "gluing" components to work together. The development is mostly in a language such as Python or C++.
 
 Although many of today's robotic platforms did not exist when Willow Garage was coming up with ROS, the developers were visionary enough to design the software to be compatible with any general robot - whether it be a flying quadcopter, a wheeled rover, or a bipedal humanoid. Early ROS developers learned that a powerful and efficient method to handle the complexity of robotic software could be accomplished using modules, as shown in Figure 2.1. This modularity takes the form of independent robotic components that perform separate functions and simplify the exchange of information. These components, called "nodes", share data with one another and act as the basic building blocks of ROS. Nodes can vary in function from sensor drivers at the low-level to even high-level tasks such as path planning with dynamic obstacle avoidance. The software design pattern used to facilitate the message exchange between nodes is known as the Publish-Subscribe (Pub/Sub) model. Within the context of this course, Pub/Sub is the communication framework that ROS relies on.
 
-ROS is not a real-time framework; yet each of its components, ticking on the same clock, can infer the recency of a message through its time-stamp. 
+ROS is not a real-time framework; yet each of its components, ticking on the same clock, can infer the recency of a message through its time-stamp.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=1\textwidth]{ModularityPhoto}
@@ -100,7 +100,7 @@ Nodes communicate with each other via peer-to-peer messages. Some common message
 \end{frm-def}
 
 The peer-to-peer message system that ROS uses is illustrated in Figure 2.2. Messages contain information such as sensor data and commands. The messages (Msg) are sent over a topic. For example, sensor nodes send messages to various topics, which controller nodes access to send commands to motors and actuators to move the robot or perform some other action.\\
-   
+
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.7\textwidth]{ChatRoom}
@@ -124,15 +124,15 @@ Publishers are nodes that "publish" messages to a topic for other nodes to recei
 {\it Note: If no nodes are subscribed to a published message, ROS automatically does not publish the unused data to preserve bandwidth.} \\
 
 \begin{frm-def}[Subscriber]
-A subscriber is a node that receives messages through a topic. 
+A subscriber is a node that receives messages through a topic.
 \end{frm-def}
 
 When sensors or other publishers send their messages, there must be nodes to receive them. These nodes are called subscribers. They "subscribe" to a topic to receive relevant information in order to perform a task. For example, these subscribers might collect information from sensors to determine location or pass commands to control actuators. In Figure 2.2, "Client 2" and "Client 3" are subscribers receiving messages from the topic.\\
 
 \section{Basics of programming with ROS}
 \subsection{Creating a Publisher}
-Starting a publisher consists of creating a node, setting a topic name, defining the type of message that will be sent, and setting a rate at which to send the message and a queue size for held messages. Nodes must have unique names; specifying the 'anonymous' option in node initialization allows the use of identical copies of a node, adding anonymous appendages to their names for uniqueness. 
-Sample code for creating a publisher node named "talker" is given below. The topic is "chatter" and it sends a string once per second. 
+Starting a publisher consists of creating a node, setting a topic name, defining the type of message that will be sent, and setting a rate at which to send the message and a queue size for held messages. Nodes must have unique names; specifying the 'anonymous' option in node initialization allows the use of identical copies of a node, adding anonymous appendages to their names for uniqueness.
+Sample code for creating a publisher node named "talker" is given below. The topic is "chatter" and it sends a string once per second.
 
 \begin{verbatim}
 import rospy
@@ -140,20 +140,20 @@ from std_msgs.msg import String
 
 def talker():
     rospy.init_node('talker', anonymous=True)
-    #create a node. 'talker' indicates that this node publishes. 
+    #create a node. 'talker' indicates that this node publishes.
     #The anonymous setting allows the master to check whether that name exists
     #already on the network and appends characters to make the name unique.
-    
+
     pub.rospy.Publisher('chatter', String, queue_size=10)
-    #chatter is the topic name, the message type is a string, 
+    #chatter is the topic name, the message type is a string,
     #and there can be 10 messages in the queue
-    
-    rate = rospy.Rate(1) 
+
+    rate = rospy.Rate(1)
     #sets the rate to 1 Hz. A message will be sent approximately once per second
-    
+
     rospy.loginfo("Starting ROS node talker...")
     #this message sends when the publisher node starts up
-    
+
     while not rospy.is_shutdown(): #as long as ROS is still running
         msg = "Greetings humans!" #define a message to send
         pub.publish(msg) #send the message
@@ -176,7 +176,7 @@ Another option available when creating a publisher is the "latch." This allows a
 % I think command line things should come after we introduce the components, like it was before
 The command 'rosrun' can be used to fire up this publisher node by specifying its name and the package it belongs to (more on packages later): for instance,
 \begin{verbatim}
-	rosrun aa274 talker.py 
+	rosrun aa274 talker.py
 \end{verbatim}
 As noted above, however, a publisher does not send messages until the topic is actually subscribed to. The rostopic command line tool offers a handy way to subscribe to a topic to monitor its messages. Below we list three most common rostopic commands:\\ \\
 {\ttfamily
@@ -187,7 +187,7 @@ rostopic hz $<topic>$ & measures topic publishing rate \\
 \end{tabular}
 }
 
-The last command is particularly useful in debugging responsiveness of an application, for example in the face of a lossy connection in deep learning vision work.  
+The last command is particularly useful in debugging responsiveness of an application, for example in the face of a lossy connection in deep learning vision work.
 
 \subsection{Creating a Subscriber}
 Much like the publisher definition above, A subscriber node needs a subscriber function, specifying the topic name, message type, and a handle to a callback function. This callback function takes the incoming message as a parameter and performs some operation, such as printing the message data. The sample program below creates a subscriber node 'listener' that subscribes to the 'chatter' topic published by the 'talker' node.
@@ -198,22 +198,22 @@ from std_msgs.msg import String
 def callback(msg):
     rospy.loginfo("Received: %s", msg.data)
     #record the message as received
-    
+
 def listener():
     rospy.init_node('listener', anonymous=True)
     #create a node. 'listener' indicates that this node subscribes.
     #The anonymous setting allows the master to append characters to make the name unique.
-    
+
     rospy.Subscriber("chatter", String, callback)
-    #subscribe to the "chatter" topic, receiving Strings. 
+    #subscribe to the "chatter" topic, receiving Strings.
     #callback is filled by the above function
-    
+
     rospy.loginfo("Listening on the chatter topic...")
     #indicate that the subscriber has started
-    
+
     rospy.spin()
     #keep listening for messages
-    
+
 if __name__ == '__main__':
 	listener()
 \end{verbatim}
@@ -230,8 +230,8 @@ The launch file can be seen as the ROS notion of an application: instead of sepa
 \end{verbatim}
 
 \subsection{Case Study using USB Camera}
-An example of a more complex application of ROS is shown in class through the case study of edge detection in a camera image. A camera node connects to a USB camera, publishing raw images. An edge detection node runs on these raw images and publishes its processed images. Image view nodes subscribe to and display both images. A single launch file, shown below, launches all the nodes. An rqt\verb|_|graph, shown in Figure 2.3, helps visualize the connections between various publishers and subscribers. This case study demonstrates how a complex function can be accomplished simply by launching pre-existing nodes in ROS. 
- 
+An example of a more complex application of ROS is shown in class through the case study of edge detection in a camera image. A camera node connects to a USB camera, publishing raw images. An edge detection node runs on these raw images and publishes its processed images. Image view nodes subscribe to and display both images. A single launch file, shown below, launches all the nodes. An rqt\verb|_|graph, shown in Figure 2.3, helps visualize the connections between various publishers and subscribers. This case study demonstrates how a complex function can be accomplished simply by launching pre-existing nodes in ROS.
+
 \begin{verbatim}
 <launch>
     <arg name="video_device" default="/dev/video0" />
@@ -316,4 +316,10 @@ Open Source Robotics Foundation. (2018). Retrieved from https://www.osrfoundatio
 Pavone, M. (2018). {\it AA274: Principles of robotic autonomy, lecture 2 notes} [PowerPoint Slides]. Retrieved from https://canvas.stanford.edu/courses/75589/files/folder/Lectures?.
 
 Willow Garage History. (2015). Retrieved from http://www.willowgarage.com/pages/about-us/history
+
+
+\subsubsection{Contributors}
+Winter 2019: [Your Names Here]
+\\
+Winter 2018: Marco Hinojosa, Ryan Loper, John McNelly, Dipti Motwani, Patrick Washington
 \end{document}
