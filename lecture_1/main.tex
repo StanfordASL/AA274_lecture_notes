@@ -65,13 +65,48 @@
 
 \lecture{1}{Mobile Robot Kinematics}{}{}
 
-The following notes summarize the first lecture of AA 274: Principles of Robotic Autonomy. This lecture covers two introductory materials (Mobile Robot Kinematics and Motion Control), is organized into meaningful sections, and is annotated with formal definitions, graphics and literature references.
+The following notes summarize the first lecture of AA 274: Principles of Robotic Autonomy. This lecture covers two introductory materials (Mobile Robot Ki nematics and Motion Control), is organized into meaningful sections, and is annotated with formal definitions, graphics and literature references. 
 
-\section*{Mobile Robot Kinematics}
+\section*{Course Introduction}
+
+This goal of this course is to learn the theoretical, algorithmic and implementation aspects of the
+main techniques for robot autonomy. The four following pillars of the ``autonomy stack" will be covered:
+
+\begin{enumerate}
+    \item motion control (2 lectures);
+    \item perception, from classic to deep learning approaches (6 lectures);
+    \item localization and SLAM (4 lectures);
+    \item planning, decision making and system architecting (4 lectures).
+\end{enumerate}
+
+In addition to covering the above theoretical topics on robot autonomy, the course will also emphasize  hands on practical experience - this will happen through the extensive use of the Robotic Operating System (ROS) in both assignments and the final project. For more details on ROS, see lecture 2.
+
+\section*{Lecture 1 Introduction}
+
+Lecture 1 will describe kinematic constraints on mobile robots, and different robot wheel configurations. We will merge these concepts to describe a few wheeled robot kinematic models. Outlined below
+\begin{enumerate}
+    \item Kinematic Constraints
+    \begin{enumerate}
+        \item Holonomic Constraints
+        \item Nonholonomic Constraints
+    \end{enumerate}
+    \item Wheel Configurations
+    \begin{enumerate}
+        \item Standard Wheels
+        \item Castor Wheels
+        \item Omni-directional Wheels
+    \end{enumerate}
+    \item Mobile Robot Models
+    \begin{enumerate}
+        \item Unicycle (a.k.a. "differential drive")
+        \item Tricycle (simple car)
+    \end{enumerate}
+\end{enumerate}
 
 In this class, an emphasis will be placed on mobile robots and vehicles as opposed to stationary machines. With mobile robots, the focus is on motion and trajectories rather than configurations and interactions with the environment. As such, we need to consider the dynamics and kinematic constraints that govern the motion of each robot.
 
-\subsection*{Kinematic Constraints}
+\section*{Kinematic Constraints}
+\subsection*{Holonomic Constraints}
 
 The motion state, or configuration, of a robot at any point in time is given by the configuration vector \cite{ssvo}:
 
@@ -119,7 +154,7 @@ However, the converse is generally not true \cite{ssvo}.
 
 The general kinematic constraint in the form $ a_i (\xi, \dot{\xi}) $ can either be a holonomic or a nonholonomic constraint. It is holonomic if it can be integrated to the holonomic form of $ h_i(\xi) = 0 $. Otherwise, it is nonholonomic \cite{ssvo}.
 
-In practice, both types of constraints affect the system differently: holonomic constraints reduce accessibility of the robot by limiting the robot configuration to a lower-dimensional subspace (each constraint removes one degree of freedom), whereas nonholonomic constraints do not limit accessibility at all; instead, they constrain the possible velocities at each configuration state. In particular, Pfaffian form constraints $ a_i(\xi) \cdot \dot{\xi} = 0 $ allow only velocities from the null space of $ a_i (\xi) $.
+In practice, both types of constraints affect the system differently: holonomic constraints reduce accessibility of the robot by limiting the robot configuration to a lower-dimensional subspace (each constraint removes one degree of freedom), whereas nonholonomic constraints do not limit accessibility at all; instead, they constrain the possible velocities at each configuration state. In particular, Pfaffian form constraints $ a_i(\xi) \cdot \dot{\xi} = 0 $ allow only velocities from the null space of $ a_i (\xi) $. 
 
 A kinematic system with any nonholonomic constraints is denoted as a nonholonomic mechanical system.
 
@@ -168,7 +203,7 @@ The \textbf{Standard Wheel} is the most ubiquitous of the wheel types. Its defin
 
 The \textbf{Castor Wheel} differs from the fixed wheel in that it is mounted on the robot in an off-centered position and always fastened to a rotating axis. The wheel's orientation is then either actively steered or passively governed by the robot's motion. The main advantage of the Castor Wheel is that the off-centered axis of rotation essentially allows the wheel to circumvent the no-slip constraint. Of course, it still cannot achieve true omnidirectional motion because it can only exert force along its orientation\cite{sns}.
 
-\begin{figure}[H]
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.4\textwidth]{cast}
 \caption{Castor Wheel}
@@ -182,9 +217,18 @@ The \textbf{Swedish Wheel} and the \textbf{Spherical wheel} are special wheel de
 \caption{Omnidirectional Swedish Wheel \cite{swed}}
 \end{figure}
 
-\subsection*{Kinematic Robot Models}
+\subsection*{Kinematic Models and Degree of Mobility}
 
-By putting together all the constraints that arise from the no slip conditions, we can come up with a "Kinematic Model" of our robot. While we do not have to do this in this class, to derive the kinematic model for your given robot, you would compile the no-slip constraints into a matrix, then look at the null space of that constraint matrix. This will tell you the set of possible velocities of your robot, which is the vehicle's kinematic model. We will use some simple kinematic models in this class to describe the motion of our mobile robot:
+By putting together all the constraints that arise from the no slip conditions, we can come up with a kinematic model of our robot. While we do not have to do this in this class, to derive the kinematic model for your given robot, you would compile the no slip constraints into a matrix, then look at the null space of that constraint matrix. This will tell you the set of possible velocities of your robot. The reason the null space of the constraint matrix forms the set of possible velocities is that the no slip conditions each impose a constraint in the Pfaffian form $$a_i(\xi) \cdot \dot{\xi} = 0.$$ Thus it is possible to reach a given velocity if and only if it is orthogonal to each row of the constraint matrix, or equivalently if it lies in the null space of the constraint matrix.
+
+More specifically, a nonholonomic constraint matrix $C_1(\beta_s)$ is derived by stacking all the no slip conditions for the fixed wheels and steerable wheels:
+$$C_1(\beta_s)= \begin{bmatrix}
+           C_{1f} \\
+           C_{1s}(\beta_s) \\
+         \end{bmatrix}$$
+where $C_{1f}$ is the matrix of no slip conditions for the fixed wheels and $C_{1s}(\beta_s)$ is the matrix of no slip conditions for the steerable wheels, which are steerable by the wheel angle $\beta_s$. The dimension of the null space of $C_1(\beta_s)$ determines the number of degrees of freedom the robot can move in by manipulating the wheel velocities, also known as the robot's degree of mobility $\delta_m$. The possible range of mobility values for any robot is $0 \leq \delta_m \leq 3.$ The degree of mobility is $\delta_m=3$ only if there are no independent kinematic constraints, i.e. if there are neither fixed nor steerable wheels attached to the robot. A degree of mobility of $\delta_m=0$ is only possible if there are three independent kinematic constraints (e.g. if the robot has three fixed wheels at different angles). In this case, the robot can not move in any direction.
+
+By finding the null space of the nonholonomic constraint matrix you can express the set of possible velocities in a parameterized form. This is what is known as a kinematic model. We will use some simple kinematic models in this class to describe the motion of our mobile robot:
 
 \subsubsection*{"Unicycle" (a.k.a. "differential drive") Model:}
 
@@ -203,6 +247,7 @@ The kinematic model of unicycle robots is as follows:
 \end{pmatrix} =
 \begin{pmatrix} \cos \theta \\ \sin \theta \\ 0 \end{pmatrix} v + \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix} w
 \]
+This kinematic model is governed by the no lateral slip and pure rolling constraints of the fixed unicycle wheel. The differential-drive robot, although mechanically different, yields the same kinematic model. This is because the collection of constraints on a differential-drive robot can be combined to form one independent constraint. First, the passive wheel is free to move in any direction and can be ignored. Second, the two fixed drive wheels are parallel, therefore, the constraints do not allow the robot to move orthogonal to the wheel plane but allows the robot to rotate with respect to the global reference frame without translating. Finally, the pure rolling constraint is the same in both cases, the addition of the second wheel not changing the kinematics of the robot. Therefore, the kinematics of both robots are the same, both rotating and translating with respect to a constant point on the chassis. 
 
 \subsubsection*{"Tricycle" (or simple car) Model:}
 
@@ -260,6 +305,25 @@ $
 v= u_{1,max}\;\textup{cos}(\zeta_{max}),\;|w|\leq |v|\;\textup{tan}(\zeta_{max}) \rightarrow \textup{Dubin's car}
 $
 
+\section*{Further Readings and Additional Resources}
+
+\begin{itemize}
+   \item  Additional information on holonomic vs. nonholonomic constraints
+   \begin{itemize}
+     \item  https://alliance.seas.upenn.edu/~meam535/cgi-bin/pmwiki/uploads/Main/Constraints10.pdf
+     \item http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture5.pdf
+   \end{itemize}
+   \item PowerPoint slides on dynamics, wheels, and constraints
+   \begin{itemize}
+     \item  http://www.csc.kth.se/utbildning/kth/kurser/DD2426/robot-h08/mtrl/Kinematics2x2.pdf
+   \end{itemize}
+   \item Rotation Matrices Review
+   \begin{itemize}
+       \item http://mathworld.wolfram.com/RotationMatrix.html
+   \end{itemize}
+ \end{itemize}
+
+
 \begin{thebibliography}{9}
 
 \bibitem{ssvo}
@@ -277,8 +341,9 @@ L. Lin, H. Shih. \textit{Modeling and Adaptive Control of an Omni-Mecanum-Wheele
 \end{thebibliography}
 
 \subsubsection*{Contributors}
-Winter 2019: [Your Names Here]
+Winter 2019: S. Bernardon, T. DeWeese,  A. Jagesten, P. Pipatpinyopong, G. Spellman, J. Malmstrom, M. Ricks, and V. Zhang
 \\
 Winter 2018: S. Spears, C. Covert, A. Hosler, Z. Chase, and H.M. Ewald
 
 \end{document}
+
