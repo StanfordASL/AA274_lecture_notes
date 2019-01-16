@@ -1,5 +1,5 @@
 # AA274_lecture_notes
-Compiled student maintained lecture notes for AA274. 
+Compiled lecture notes for AA274. These notes are not official course material, but rather are compiled, edited and maintained by students in the course to serve as a useful reference for future students as well as others interested in robotic autonomy. If you notice a mistake in the notes and want to contribute a correction, please submit a pull request.
 
 Each lecture has a folder containing the `.tex` file as well as any additional files (figures, images, etc.)
 
