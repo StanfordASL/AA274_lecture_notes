@@ -7,7 +7,7 @@
 \documentclass[twoside]{article}
 
 \usepackage[math]{kurier}
-\usepackage[sc]{mathpazo}                   
+\usepackage[sc]{mathpazo}
 \renewcommand{\sfdefault}{kurier}
 
 \usepackage{fullpage,enumitem,amsmath,amssymb,graphicx}
@@ -36,7 +36,7 @@
 \renewcommand{\thetable}{\thelecnum.\arabic{table}}
 
 
-\newcommand{\lecture}[4]{
+\newcommand{\lecture}[3]{
    \pagestyle{myheadings}
    \thispagestyle{plain}
    \newpage
@@ -47,11 +47,10 @@
    \framebox{
       \vbox{\vspace{2mm}
     \hbox to 6.28in { {\bf \sffamily AA 274: Principles of Robotic Autonomy
-                        \hfill Winter 2018} }
+                        \hfill Winter 2019} }
        \vspace{4mm}
        \hbox to 6.28in { {\sffamily{\Large \hfill Lecture #1: #2  \hfill}} }
        \vspace{2mm}
-       \hbox to 6.28in { {\it \hfill Scribes: #4} }
       \vspace{2mm}}
    }
    \end{center}
@@ -66,7 +65,7 @@
 %document
 \begin{document}
 %modify this
-\lecture{4}{Robotic sensors and introduction to computer vision}{}{Qizhan Tam, Ben Goeing, Bilan Jackie Yang, Marc Deetjen}
+\lecture{4}{Robotic sensors and introduction to computer vision}{}
 
 \section{Introduction}
 
@@ -81,7 +80,7 @@ To accomplish its objective, an autonomous system first requires knowledge about
 \textbf{Proprioceptive}: Measures the internal robot parameters (e.g. motor speed, wheel load, robot arm joint angles, battery voltage etc.). \newline \newline
 \textbf{Exteroceptive}: Acquires information from the robot's environment (e.g. distance measurements, light intensity, sound amplitude etc.). \newline \newline
 \textbf{Passive}: Measures ambient environmental energy entering the sensor (e.g. temperature probes, microphones, CCD/CMOS cameras etc.). Challenge: environment has a significant influence on the sensor performance.\newline \newline
-\textbf{Active}: Emits energy into the environment, then measure the environmental reaction (e.g. wheel quadrature encoders, ultrasonic sensors, laser rangefinders etc.). Challenge: emitted energy may affect environment and sensor may suffer interference from other signals. 
+\textbf{Active}: Emits energy into the environment, then measure the environmental reaction (e.g. wheel quadrature encoders, ultrasonic sensors, laser rangefinders etc.). Challenge: emitted energy may affect environment and sensor may suffer interference from other signals.
 
 
 \subsubsection{Performance of Sensors}
@@ -95,7 +94,7 @@ The following design specs are often used to characterize the performance of sen
  \item \textbf{Bandwidth/frequency}: The speed with which a sensor can provide readings (units of Hertz).
 \end{itemize}
 
-In Situ Sensor Performance 
+In Situ Sensor Performance
 The following performance metrics must be tested in a real environment:
 \begin{itemize}
   \item \textbf{Sensitivity}: The degree to which a change in the target input changes the output signal.
@@ -129,7 +128,7 @@ The following performance metrics must be tested in a real environment:
     Frequently assumed in mobile robotics as a simplification, two random variables are independent if and only if: $E[X_1X_2]=E[X_1]E[X_2]$ and $Var(X_1+X_2)=Var(X_1)+Var(X_2)$
     \item \textbf{Gaussian Distribution/Normal Distribution}:
     The distribution is usually used for a random variable for which no better error model has been found. It is symmetric about mean $\mu$ and is unimodal with a peak at $\mu$. It has tails that approach zero asymptotically, which means that all errors are possible, but large errors may be highly improbable. The Gaussian probability density function only depends on the $\mu$ and $\sigma$: $f(x)=\frac{1}{\sigma\sqrt{2\pi}}exp\left(-\frac{\left(x-\mu\right)^2}{\sigma^2}\right)$
-    
+
 \end{itemize}
 \subsection{Encoders}
 Encoders are proprioceptive sensors that can be used for tasks such as robot localization. In mobile robotics, optical encoders are used to measure angular speed and position and to control the position or speed of wheels and other motor-driven joints. This is best done in the reference frame of the robot.
@@ -179,7 +178,7 @@ $$F_{applied} = F_{inertial} + F_{damping} + F_{spring} = m \ddot{x} + c \dot{x}
 
 Where m is the proof mass, c is the damping coefficient, k is the spring constant, and x is the equilibrium case relative position. When a static force is applied, the system will oscillate until it reaches a steady state. Appropriate damping material and mass are chosen to ensure that the system can stabilize quickly and then the applied acceleration can be calculated as $a_{applied} = \frac{kx}{m}$ .
 
-Modern accelerometers, like the ones in mobile phones, are usually very small, which is enabled by the Micro Electro-Mechanical Systems (MEMS) consisting of a cantilevered beam and a proof mass. The deflection of the proof mass from its neutral position is measured using the capacitive effect, which essentially measures the capacitance, or the piezoelectric effect, which measures an induced voltage. 
+Modern accelerometers, like the ones in mobile phones, are usually very small, which is enabled by the Micro Electro-Mechanical Systems (MEMS) consisting of a cantilevered beam and a proof mass. The deflection of the proof mass from its neutral position is measured using the capacitive effect, which essentially measures the capacitance, or the piezoelectric effect, which measures an induced voltage.
 
 \begin{figure}[H]
   \centering
@@ -203,14 +202,14 @@ Modern accelerometers, like the ones in mobile phones, are usually very small, w
 An IMU is a device that uses gyroscopes and accelerometers to estimate the relative position, orientation, velocity, and acceleration of a moving vehicle with respect to an inertial frame. It integrates the information from gyroscopes to estimate the vehicle orientation and from accelerometers to obtain the instantaneous acceleration to understand the position of the vehicle based on initial conditions. A detailed working principle is shown in Figure \ref{fig:smd_IMU}. Through multiple times of integration, however, noises are accumulated over time, which result in the fundamental problem of drifting in IMUs. To cancel drift, periodic references to external measurements are required. Thus, IMUs are usually augmented with other techniques like GPSs or cameras to obtain some reference to absolute positions.
 
 \subsection{Beacons}
-Beacons are signaling devices with precisely known positions. An example from intuition is the lighthouse. Position can be determined by knowing the position of the beacon. More advanced examples of beacons are GPS, motion capture system for indoor use. With at least twenty-four operational GPS satellites at all times, the GPS synchronizes and reads data transmission from four satellites to obtain its own position based on the arrival time and instantaneous location. The four satellites provide three position axes plus a time correction. The localization resolution of GPS can be achieved using pseudorange with an extension method called differential GPS that uses a second receiver that is static at a known exact position to correct errors. 
+Beacons are signaling devices with precisely known positions. An example from intuition is the lighthouse. Position can be determined by knowing the position of the beacon. More advanced examples of beacons are GPS, motion capture system for indoor use. With at least twenty-four operational GPS satellites at all times, the GPS synchronizes and reads data transmission from four satellites to obtain its own position based on the arrival time and instantaneous location. The four satellites provide three position axes plus a time correction. The localization resolution of GPS can be achieved using pseudorange with an extension method called differential GPS that uses a second receiver that is static at a known exact position to correct errors.
 
 \subsection{Active Ranging}
 
 Active ranging sensors provide direct measurements of distance to objects in vicinity. These sensors are important for both localization and environment reconstruction. For example, they can be used for self-driving cars to know where the destinations are. There are two types of active ranging sensors. One is the time-of-flight active ranging sensors (e.g., ultrasonic, laser rangefinder, and time-of-flight camera) and the other is geometric active ranging sensors (optical triangulation and structured light).
 
 
-\begin{figure} 
+\begin{figure}
 \centering
 \includegraphics[scale=0.4]{ultra.png}
 \caption{(A) Ultrasonic sensor; (B) laser rangefinder; (C) laser range sensor}
@@ -219,10 +218,10 @@ Active ranging sensors provide direct measurements of distance to objects in vic
 \end{figure}
 
 \subsubsection{Time-of-flight Active Ranging}
-Time-of-flight active ranging sensors make use of the propagation speed of sounds or an electromagnetic wave. The travel distance is given by 
+Time-of-flight active ranging sensors make use of the propagation speed of sounds or an electromagnetic wave. The travel distance is given by
 $$d = c \cdot t$$
 where d is the distance traveled, c is the speed of wave propagation, and t is the time of flight. Commonly used active ranging sensors are the ultrasonic sensor and LiDAR. Distance can be obtained by measuring the time form the transmission of the waves to detection of an echo. These waves could sound or light. Light sensors could be much more expensive because they are required to measure much shorter time but they also achieve much higher quality. LiDAR (Light Detection and Ranging) emits light beam and measure the time of return. Usually there are multiple emitters and receive multiple returns. LIDAR is often rotating to get 360 degree of view. The Performance depends on several factors, e.g., uncertainties in determining the exact time of arrival and interaction with the target.
-\begin{figure} 
+\begin{figure}
 \centering
 \includegraphics[scale=0.2]{light.png}
 \caption{Possible light structures \cite{SNS}}
@@ -231,11 +230,12 @@ where d is the distance traveled, c is the speed of wave propagation, and t is t
 
 
 \subsubsection{Geometric Active Ranging}
-Geometric active ranging sensors use geometric properties in the measurements to establish distance readings. Optical triangulation sensors (1D) transmit a collimated beam toward the target and use lens to collect reflected light and project it onto a position-sensitive device or linear camera. Structured light sensors (2D or 3D) project a known light pattern (e.g., point, line, or texture) onto the environment. The reflection is captured by a receiver and then, together with known geometric values, range is estimated via triangulation. Figure \ref{fig:3D_light} shows systems that project light textures. CCD or CMOS receiver can then take photos and filter these images to identify the pattern’s reflection based on the geometrical deformation of the pattern of light. 
+Geometric active ranging sensors use geometric properties in the measurements to establish distance readings. Optical triangulation sensors (1D) transmit a collimated beam toward the target and use lens to collect reflected light and project it onto a position-sensitive device or linear camera. Structured light sensors (2D or 3D) project a known light pattern (e.g., point, line, or texture) onto the environment. The reflection is captured by a receiver and then, together with known geometric values, range is estimated via triangulation. Figure \ref{fig:3D_light} shows systems that project light textures. CCD or CMOS receiver can then take photos and filter these images to identify the pattern’s reflection based on the geometrical deformation of the pattern of light.
 \subsection{Other Sensors}
 
 Some classical examples of other sensors include radars that use Doppler effect to produce velocity data. Tactile sensors are critical to mobile, autonomous robots and are well understood and easily implemented. Some emerging technologies include artificial skins for obtaining tactile measurements and neuromorphic camera that detect motions with neurons spiking in changes of illumination. For example, small drones are often equipped with neuromorphic cameras which has very small power consumption.
 
+%% ------- WINTER 2019 LECTURE 4 SCRIBE TEAM: improve the sections up until this point. ------- %%
 
 \section{Introduction to computer vision and cameras}
 Whereas most sensors require contact or an active signal to interact with their environment, vision sensors simply capture light rays that are already emitted by the environment. Vision is thus a powerful sensing method that can be defined as: the ability to interpret the surrounding environment using light in the visible spectrum reflected by objects in the environment. The most familiar vision sensor, the human eye, is an incredible example of a vision sensor because it captures an enormous amount of information on the order of millions of bits of information per second.
@@ -252,7 +252,7 @@ The basic idea of a camera, meaning a sensor that captures light, involves an un
 
 Cameras work by capturing these light rays on some sort of photoreceptive surface in an organized way. As we see in Figure \ref{fig:LightRays}A, if we simply place a planar photoreceptive surface, or image plane, in front of an object, light rays that scattered from multiple different locations on the object will arrive at similar locations on the image plane and only an extremely blurred image of the object will be recorded. A solution to this blurring issue, as seen in Figure \ref{fig:LightRays}B, is to add a barrier that blocks off most of the light and only lets light through an aperture, or pinhole. Based on the geometry of this new system, if a light ray is absorbed in a certain location on the image plane, we know where that light ray last bounced off of an object. Namely, the light ray must have scattered from an object somewhere along the vector extending into space that connects the detected position on the image plane and the pinhole. In other words, the image plane will capture a picture of the object and surrounding scene because the geometry of the camera constrains the light rays that are captured. However, as captured by the photograph, the size of object is ambiguous and can only be determined if one knows how far away the object lies.
 
-\begin{figure} 
+\begin{figure}
 \centering
 \includegraphics[width=\textwidth]{LightRays0.jpg}
 \caption{Light rays on a photoreceptive surface referred to as the image plane. In (A), the image is blurry whereas in (B), a barrier has been added so that "red" and "green" scattered light rays can be distinguished  \cite{FP}.}
@@ -267,7 +267,7 @@ We can then solve for $x$ and $y$ which lie on the image plane and are proportio
 
 $$x=f\frac{X}{Z} \ \ ; \ \ y=f\frac{Y}{Z}$$
 
-\begin{figure} 
+\begin{figure}
 \centering
 \includegraphics[width=\textwidth]{PinholeMath0.jpg}
 \caption{Pinhole camera model. In (A), it can be seen that due to the geometry of the pinhole camera system, the object image is inverted on the image plane and thus, for ease of math, the virtual image plane which displays the non-inverted object is used. In (B), the image center is labeled as $c$, the pinhole is labeled as $o$, the optical axis lies along vector $k$, the focal length is $f$, the 3D point is labeled as $P$, and the 2D pixel point is labeled $p$  \cite{HZ}.}
@@ -288,7 +288,7 @@ $$\frac{1}{z}+\frac{1}{Z}=\frac{1}{f}$$
 
 We can additionally notice from this geometry that the variable $z$ in the lens model is equivalent to $f$ in the pinhole model and once again notice that points that are not a distance of $Z$ away from the lens will be out of focus. We also see that if $Z$ approaches infinity, light would focus a distance of $f$ away from the lens. Thus, we could assume a pinhole model if the lens is focused at infinity and this could allow us to map 3D points into the camera image plane where they could be converted into pixel coordinates.
 
-\begin{figure} 
+\begin{figure}
 \centering
 \includegraphics[width=\textwidth]{Lens0.jpg}
 \caption{A lens is used to focus light. In (A), a lens is used to focus light originating from an object at a certain distance whereas different distances are blurred. In (B), the thin lens model can be developed using similar triangles  \cite{HZ}.}
@@ -301,4 +301,10 @@ With this more complete camera model, we can discuss the tradeoffs involved in m
 
 \bibliographystyle{unsrt}%Used BibTeX style is unsrt
 \bibliography{reference}
+
+\subsubsection*{Contributors}
+Winter 2019: [YOUR NAMES HERE
+\\
+Winter 2018: Qizhan Tam, Ben Goeing, Bilan Jackie Yang, Marc Deetjen
+
 \end{document}

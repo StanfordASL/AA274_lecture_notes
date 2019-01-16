@@ -26,7 +26,7 @@
 \renewcommand{\thetable}{\thelecnum.\arabic{table}}
 
 
-\newcommand{\lecture}[4]{
+\newcommand{\lecture}[3]{
    \pagestyle{myheadings}
    \thispagestyle{plain}
    \newpage
@@ -37,7 +37,7 @@
    \framebox{
       \vbox{\vspace{2mm}
     \hbox to 6.28in { {\bf \sffamily AA 274: Principles of Robotic Autonomy
-                        \hfill Winter 2018} }
+                        \hfill Winter 2019} }
        \vspace{4mm}
        \hbox to 6.28in { {\sffamily{\Large \hfill Lecture #1: #2  \hfill}} }
        \vspace{2mm}
@@ -273,6 +273,272 @@ z_1(0) = 10, z_2(0) = 0, z_1(1) &= 0, z_2(1) = 0, \\
 \end{equation}
 
 Then we can input these BVP and BC into Python to solve the problem.
+%--------------------------End of Example for Indirect Methods--------------------------%
+
+%% ------- WINTER 2019, LECTURE 4 SCRIBES, MAKE YOUR EDITS BELOW THIS LINE -------- %%
+
+\subsection{Direct Methods}
+The alternate way for solving these optimal control problems is through use of what is known as a direct method where instead we carry out the reverse process and rather textit{\textbf{"first discretize, then optimize"}}. We take our same infinite time dimensional problem, discretize it into itemized finite dimensional elements, and then optimize those parts known as a nonlinear programming problem (NLP).
+
+As direct methods are not highlighted in great detail for the extent of this course a brief conceptual overview is provided. Interested students are referred to further courses and literature for further exploration. Two main ways for carrying out a direct method can be observed through what is called either the \textbf{Control Parameterization Method} which discretizes the control function over n steps treating the trajectory as continuous or through \textbf{State and Parameterization} which discretizes both the state and control functions.
+
+Several software packages including DIDO, Propt, and GPOPS provide excellent tools for solving with these direct method types.
+
+\section{Differential Flatness}
+The concept of differential flatness is particularly useful in controlling certain nonlinear systems, especially when explicit trajectory generation is required.
+
+For example, consider the problem of designing a trajectory for a quadrotor (which is a differentially flat nonlinear system). Without leveraging the flatness property, a trajectory designer would have to compute a trajectory for all $12$ state variables, position ($x$,$y$,$z$), velocity ($\dot{x}$,$\dot{y}$,$\dot{z}$), angles ($\phi$,$\theta$,$\psi$), and angular rates ($\dot{\phi}$,$\dot{\theta}$,$\dot{\psi}$), the 4 control inputs ($u_{1,2,3,4}$), and also make sure these satisfy the differential equations $\bar{\dot{x}} = f(\bar{x},u)$.
+
+When utilizing the concept of differential flatness, it turns out that the flat outputs $\bar{z}$ are just the position ($x$,$y$,$z$) and the yaw angle ($\psi$). Therefore a trajectory designer could design trajectories only for these flat variables, and then algebraically compute the remaining states and controls. Simply put, when a nonlinear system is differentially flat the trajectory designer can plan in the flat output space and then directly map those to the appropriate control inputs without having to worry about violating the dynamics equations for the system!
+
+Mathematically, a non-linear system
+\begin{equation}
+\dot{x} = f(x,u),
+\end{equation}
+
+is differentially flat with flat output $z$ if there exists a function $\alpha$ such that
+
+\begin{equation}
+z = \alpha (x,u,\dot{u},\dots,u^{(p)}),
+\end{equation}
+
+and such that the solutions to the system $x$ and $u$ can then be written as functions of the flat output $z$ and a finite number of its derivatves
+
+\begin{equation}
+\begin{split}
+x &= \beta (z,\dot{z},\dots,z^{(q)}) \\
+u &= \gamma (z,\dot{z},\dots,z^{(q)}) \\
+\end{split}
+\end{equation}
+
+From these relations we can also write boundary conditions on the flat outputs that encode the initial and terminal conditions.
+
+\begin{equation} \label{flatbc}
+\begin{split}
+x(0) &= \beta (z(0),\dot{z(0)},\dots,z^{(q)}(0)) = x_0 \\
+x(T) &= \beta (z(T),\dot{z}(T),\dots,z^{(q)}(T)) = x_f \\
+\end{split}
+\end{equation}
+
+Therefore any trajectory for $z$ that satisfies these boundary conditions can be mapped to a feasible trajectory for the nonlinear system. This means that $z$ can be defined however the designer chooses, but a common choice is by using a set of smooth basis functions $\psi(t)$
+
+\begin{equation} \label{flat}
+z(t) = \sum_{i=1}^{N} \alpha_i \psi_i(t), \quad \alpha_i \in \mathbb{R}
+\end{equation}
+
+For example, one choice is to use polynomial basis functions $\psi_1(t) = 1$, $\psi_2(t) = t$, $\psi_3(t) = t^2$, and so on. Choosing a set of smooth basis functions leads to representation that is linear in the coefficients $\alpha_i$, and thus can be easily identified algebraically.
+
+Taking derivatives of the representation in Eq. \ref{flat} gives
+
+\begin{equation}
+\begin{split}
+\dot{z}(t) &= \sum_{i=1}^{N} \alpha_i \dot{\psi_i}(t) \\
+&\vdots \\
+z^{(q)}(t) &= \sum_{i=1}^{N} \alpha_i \psi_i^{(q)}(t). \\
+\end{split}
+\end{equation}
+
+Given the initial and final conditions $z(0), \: \dot{z}(0), \: \dots , z^{(q)}(0)$ and $z(T), \: \dot{z}(T), \: \dots , z^{(q)}(T)$ that satisfy the boundary conditions in Eq. \ref{flatbc}, the coefficients $\alpha_i$ can be found by solving (assuming full rank)
+
+\begin{equation}
+\begin{bmatrix}
+    \psi_1(0) & \psi_2(0) & \dots & \psi_N(0) \\
+    \dot{\psi_1}(0) & \dot{\psi_2}(0) & \dots & \dot{\psi_N}(0) \\
+    \vdots & \vdots & & \vdots \\
+    \psi_1^{(q)}(0) & \psi_2^{(q)}(0) & \dots & \psi_N^{(q)}(0) \\
+    \psi_1(T) & \psi_2(T) & \dots & \psi_N(T) \\
+    \dot{\psi_1}(T) & \dot{\psi_2}(T) & \dots & \dot{\psi_N}(T) \\
+    \vdots & \vdots & & \vdots \\
+    \psi_1^{(q)}(T) & \psi_2^{(q)}(T) & \dots & \psi_N^{(q)}(T) \\
+\end{bmatrix}
+\begin{bmatrix}
+    \alpha_1 \\
+    \alpha_2 \\
+    \vdots \\
+    \alpha_N \\
+\end{bmatrix} =
+\begin{bmatrix}
+    z(0) \\
+    \dot{z}(0) \\
+    \vdots \\
+    z^{(q)}(0) \\
+    z(T) \\
+    \dot{z}(T) \\
+    \vdots \\
+    z^{(q)}(T) \\
+\end{bmatrix}
+\end{equation}
+
+To summarize, for differentially flat nonlinear systems, nominal trajectories and control inputs can can be computed in a more computationally efficient way.
+
+\section{Closed-loop Control}
+In the case of closed-loop control, the goal is to find
+\begin{equation}
+u^*(t)=\pi(x(t),t)
+\end{equation}
+often using two main techniques: Lyapunov analysis, or the Hamilton-Jacobi-Bellman equation and dynamic programming. The extent of these methods can be seen in classes such as AA203, however in this class we will primarily consider examples of these applications.
+\subsection{Lyapunov proof for stability}
+One type of stability for a system is known as Lyapunov stability. Lyapunov stability gives an indication of stability of a initial condition near a given equilibrium. Formally, this can be given as,
+for a autonomous nonlinear dynamical system, given by:
+\subsubsection{Theorem}
+\begin{equation}
+\dot{x} (t)=f(x(t)),   x(0) =x_0
+\end{equation}
+
+This system is Lyapunov stable if for any $\epsilon$ $>$ 0, there exists a $\delta = \delta (\epsilon)$ such that if $\vert \vert x(0) - x_e \vert \vert < \delta $ then for every t $\geq$ 0,  $\vert \vert x(t) - x_e \vert \vert < \delta$ where $x_e$ is an equilibrium point. \cite{lyupanovproof}
+
+
+The implication of this is that we are able to determine the stability of a system with respect to its equilibrium points. Systems that are Lyapunov stable will tend to stay "close to" the equilibrium point if a given initial condition satisfies the theorem. This closeness is defined by $\delta$. The full proof for stability can be found in various sources, such as \cite{ee363notes}.
+% ----------------- Polar Coordinates and Example---------------- %
+\subsection{Example}
+Let's consider a differential drive example for closed-loop control. The differential drive mobile robot has unicycle dynamics, which can be described in $XY\theta$ coordinates as follows.
+
+\begin{equation} \label{xytheta}
+\begin{split}
+\dot{x}(t) &= V(t) cos(\theta(t)) \\
+\dot{y}(t) &= V(t) sin(\theta(t)) \\
+\dot{\theta}(t) &= \omega(t)  \\
+\end{split}
+\end{equation}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{XYTheta.png}
+\caption{$XY\theta$ Coordinates}
+\label{XYThetaFigure}
+\end{figure}
+
+The control inputs of this system are $V$, which is linear velocity of the wheel and $\omega$, which is angular velocity around the vertical axis. It has been revealed that the system cannot be controlled in a closed loop with continuous time and variant feedback. In particular, if you set control inputs all to zero, the system will be stopped immediately. This feature has some advantages from a control standpoint, but clearly it is not realistic since no dynamical systems can be stopped immediately. However, many systems in real world can be adjusted model of this version.
+
+\subsection{Polar Coordinates}
+It is actually easier to design a closed-loop controller based on polar coordinates than $XY\theta$ coordinates. The polar coordinates are established according to desired state of the unicycle. Origin is at the desired position and $X_N$ axis is along the main axis of the robot. The position is defined as center of the rear axis of the vehicle. The main axis is defined as the longitudinal axis of the robot.
+
+We describe states of the robot by polar coordinates $\rho$, $\alpha$ and $\delta$ instead of $X$, $Y$ and $\theta$:
+\begin{itemize}
+  \item $\rho$: distance of the reference point of the unicycle from the goal
+  \item $\alpha$: angle of the pointing vector to the goal with respect to the unicycle main axis
+  \item $\delta$: angle of the same pointing vector with respect to the $X_N$ axis
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{RhoAlphaDelta.png}
+\caption{Polar Coordinates}
+\label{RhoAlphaDeltaFigure}
+\end{figure}
+
+Coordinate transformation between $\rho\alpha\delta$ and $XY\delta$ coordinates:
+\begin{equation} \label{coordinate transformation}
+\begin{split}
+\rho &= \sqrt{x^2+y^2} \\
+\alpha &= \mathrm{atan2}(y, x) - \theta + \pi \\
+\delta &= \alpha + \theta \\
+\end{split}
+\end{equation}
+
+Let's derive dynamic equations of the unicycle in polar coordinates. Say current position of the unicycle is at point $P$ and the origin is at point $O$. $\overrightarrow{OP}$ is position vector of the unicycle. The control input $\omega$ cannot move the position, so $\dot{\rho}$ comes from the other input $V$.
+
+\begin{equation} \label{dotrho}
+\begin{split}
+\dot{\rho} &= \vec{V} \cdot \overrightarrow{OP}/||\overrightarrow{OP}|| \\
+\dot{\rho} &= V \cos(\pi - \alpha) = -V \cos\alpha \\
+\end{split}
+\end{equation}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{RhoAlphaDelta2.png}
+\caption{Polar Coordinates}
+\label{RhoAlphaDeltaFigure2}
+\end{figure}
+
+$\dot{\delta}$ also comes from only the control input of $V$ because $\delta$ is only related to the position of the vehicle. Consider that the vehicle moves for an infinitesimal time period $\mathrm{d}t$. Displacement of the vehicle is $V\mathrm{d}t$. We can know expression of $\mathrm{d}t$ from the figure \ref{RhoAlphaDeltaFigure2} that
+\begin{equation} \label{dotdelta}
+\begin{split}
+\rho \mathrm{d}\delta = V \mathrm{d}t \sin\alpha \\
+\dot{\delta} = \frac{\mathrm{d}\delta}{\mathrm{d}t}=\frac{V \sin\alpha}{\rho}  \\
+\end{split}
+\end{equation}
+
+Expression of $\dot{\alpha}$ can be directly derived from \eqref{xytheta}, \eqref{coordinate transformation} and \eqref{dotdelta}.
+\begin{equation} \label{dotalpha}
+\begin{split}
+\dot{\alpha} &= \dot{\delta} - \dot{\theta} \\
+\dot{\alpha} &=  \frac{\mathrm{d}\delta}{\mathrm{d}t}=\frac{V \sin\alpha}{\rho} - \omega \\
+\end{split}
+\end{equation}
+
+Combination of \eqref{dotrho}, \eqref{dotdelta}) and \eqref{dotalpha} is the dynamic equations of the unicycle in polar coordinates.
+\begin{equation} \label{dotRhoDeltaAlpha}
+\begin{split}
+\dot{\rho}(t) &= -V(t) \cos(\alpha(t)) \\
+\dot{\alpha}(t) &= \frac{V(t) \sin(\alpha(t))}{\rho(t)} - \omega(t) \\
+\dot{\delta}(t) &= \frac{V(t) \sin(\alpha(t))}{\rho(t)}  \\
+\end{split}
+\end{equation}
+
+In order to achieve the goal posture, variables ($\rho$, $\alpha$, $\theta$) should all converge to zero.
+
+% ----------------------End of Polar Coordinates and Example------------------------------------------------- %
+\pagebreak
+\subsection{Control Law}
+
+For the unicycle problem proposed above, a suitable closed-loop control law is given by:
+\begin{equation}
+\begin{split}
+V=k_1 cos(\alpha)
+\\
+\omega=k_2 \alpha + k_1 \frac{sin(\alpha)cos(\alpha)}{\alpha}(\alpha + k_3 \delta)
+\end{split}
+\end{equation}
+These equations are chosen by selecting V and $\omega$ which result in the Lyapunov functions being negative semi-definite. It is possible to prove that when this is the case, the state variables will go to zero if the controller has been properly implemented.
+
+A negative semi-definite form of the Lyapunov function is necessary because we want our Lyapunov function to always be decreasing in time, as this suggests that it is tending towards an equilibrium point rather than going further away. The key here is to consider the Lyapunov function as one form of "energy" of the system, which decreases to a minimum at equilibrium points.
+
+A more detailed derivation for this result can be found in \cite{lyupanov}.
+
+
+ % -------------------- Trajectory Tracking -------------------- %
+\section{Trajectory Tracking}
+A method for trajectory tracking consists in compromising closed-loop and open-loop control. In fact, open-loop control methods are more computationally feasible to find, yet as we have seen they are not robust. On the other hand, closed-loop solutions can be robust but are more complicated to find since the necessary conditions for optimality are partial differential equations, instead of ordinary differential equations in the open-loop case.
+
+We can formulate a solution as:
+
+\begin{equation} \label{constrained}
+\begin{split}
+\: \: &u^*(t) = u_d(t) + \pi(x(t), x(t)-u_d(t)) \\
+\end{split}
+\end{equation}
+
+where $u_d(t)$ is a nominal trajectory found using open-loop control techniques. We use closed-loop control techniques to find $\pi(x(t), x(t)-u_d(t))$ that keeps our trajectory as close as possible to the nominal one.
+
+There exists a certain number of choices of techniques for trajectory tracking, among which:
+
+\begin{itemize}
+  \item Geometric strategies: \\
+  \\ An example is pursuit control. An example of strategy for the robot is to constantly try to chase a point on the desired trajectory. This method is effective, but it is difficult to provide theoretical guarantees.
+  \item Linearization techniques: \\
+  \\ They can be separated in two:
+  \begin{enumerate}
+    \item Inexact linearization: \\
+    \\
+    The dynamics of a system are usually non-linear. Yet, in the case of tracking, if we are close enough to the nominal trajectory then the relative dynamics can be linearized. The inexactness of this method comes from the fact that we only use the first terms of the relative dynamics' Taylor Series expansion to find a linear control law.
+    \\
+    \item Exact linearization: \\
+    \\
+    This method consists in cancelling the non-linearities from the system's dynamics, and developing a tracking control law from the resulting linear system. More precisely: \\
+    \\
+    - Let's consider the system dynamics: $\dot{x} = f(x) + u$, with $f$ non linear.\\
+     - We can set a virtual control input $v$ so that $u = v - f(x)$. Then $v$ is linear, and we obtain $\dot{x} = v$. \\
+     - We then design v so that x converges to the origin. Our actual control input is therefore $v - f(x)$. \\
+     \\
+     Not all systems admit this linearization. Even for those who do, one should be careful in using this method since it relies on the exactness of our non-linear model $f$. In fact, if $f$ differs consequently from the real system dynamics, the non-linearities are not cancelled with this method and the consequences of using the resulting control law could be disastrous.
+  \end{enumerate}
+  \item Optimization based techniques: \\
+  \\
+  This consists in posing the problem of trajectory tracking as an optimal control problem. These techniques are thoroughly studied in AA203.
+\end{itemize}
+ % ----------------- END of Trajectory Tracking ----------------- %
 
 \begin{thebibliography}{9}
 \bibitem{lyupanov}

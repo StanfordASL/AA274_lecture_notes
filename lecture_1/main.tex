@@ -48,7 +48,7 @@
    \framebox{
       \vbox{\vspace{2mm}
     \hbox to 6.28in { {\bf \sffamily AA 274: Principles of Robotic Autonomy
-                        \hfill Winter 2018} }
+                        \hfill Winter 2019} }
        \vspace{4mm}
        \hbox to 6.28in { {\sffamily{\Large \hfill Lecture #1: #2  \hfill}} }
        \vspace{2mm}
@@ -66,7 +66,7 @@
 
 \lecture{1}{Mobile Robot Kinematics}{}{}
 
-The following notes summarize the first lecture of AA 274: Principles of Robotic Autonomy. This lecture covers two introductory materials (Mobile Robot Ki nematics and Motion Control), is organized into meaningful sections, and is annotated with formal definitions, graphics and literature references. 
+The following notes summarize the first lecture of AA 274: Principles of Robotic Autonomy. This lecture covers two introductory materials (Mobile Robot Kinematics and Motion Control), is organized into meaningful sections, and is annotated with formal definitions, graphics and literature references.
 
 \section*{Course Introduction}
 
@@ -150,7 +150,7 @@ However, the converse is generally not true \cite{ssvo}.
 
 The general kinematic constraint in the form $ a_i (\xi, \dot{\xi}) $ can either be a holonomic or a nonholonomic constraint. It is holonomic if it can be integrated to the holonomic form of $ h_i(\xi) = 0 $. Otherwise, it is nonholonomic \cite{ssvo}.
 
-In practice, both types of constraints affect the system differently: holonomic constraints reduce accessibility of the robot by limiting the robot configuration to a lower-dimensional subspace (each constraint removes one degree of freedom), whereas nonholonomic constraints do not limit accessibility at all; instead, they constrain the possible velocities at each configuration state. In particular, Pfaffian form constraints $ a_i(\xi) \cdot \dot{\xi} = 0 $ allow only velocities from the null space of $ a_i (\xi) $. 
+In practice, both types of constraints affect the system differently: holonomic constraints reduce accessibility of the robot by limiting the robot configuration to a lower-dimensional subspace (each constraint removes one degree of freedom), whereas nonholonomic constraints do not limit accessibility at all; instead, they constrain the possible velocities at each configuration state. In particular, Pfaffian form constraints $ a_i(\xi) \cdot \dot{\xi} = 0 $ allow only velocities from the null space of $ a_i (\xi) $.
 
 A kinematic system with any nonholonomic constraints is denoted as a nonholonomic mechanical system.
 
@@ -243,7 +243,7 @@ The kinematic model of unicycle robots is as follows:
 \end{pmatrix} =
 \begin{pmatrix} \cos \theta \\ \sin \theta \\ 0 \end{pmatrix} v + \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix} w
 \]
-This kinematic model is governed by the no lateral slip and pure rolling constraints of the fixed unicycle wheel. The differential-drive robot, although mechanically different, yields the same kinematic model. This is because the collection of constraints on a differential-drive robot can be combined to form one independent constraint. First, the passive wheel is free to move in any direction and can be ignored. Second, the two fixed drive wheels are parallel, therefore, the constraints do not allow the robot to move orthogonal to the wheel plane but allows the robot to rotate with respect to the global reference frame without translating. Finally, the pure rolling constraint is the same in both cases, the addition of the second wheel not changing the kinematics of the robot. Therefore, the kinematics of both robots are the same, both rotating and translating with respect to a constant point on the chassis. 
+This kinematic model is governed by the no lateral slip and pure rolling constraints of the fixed unicycle wheel. The differential-drive robot, although mechanically different, yields the same kinematic model. This is because the collection of constraints on a differential-drive robot can be combined to form one independent constraint. First, the passive wheel is free to move in any direction and can be ignored. Second, the two fixed drive wheels are parallel, therefore, the constraints do not allow the robot to move orthogonal to the wheel plane but allows the robot to rotate with respect to the global reference frame without translating. Finally, the pure rolling constraint is the same in both cases, the addition of the second wheel not changing the kinematics of the robot. Therefore, the kinematics of both robots are the same, both rotating and translating with respect to a constant point on the chassis.
 
 \subsubsection*{"Tricycle" (or simple car) Model:}
 
@@ -342,4 +342,3 @@ Winter 2019: S. Bernardon, T. DeWeese,  A. Jagesten, P. Pipatpinyopong, G. Spell
 Winter 2018: S. Spears, C. Covert, A. Hosler, Z. Chase, and H.M. Ewald
 
 \end{document}
-
