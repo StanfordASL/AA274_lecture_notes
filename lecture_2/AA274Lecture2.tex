@@ -49,12 +49,12 @@
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
-    filecolor=magenta,      
+    filecolor=magenta,
     urlcolor=cyan,
 }
- 
+
 \urlstyle{same}
- 
+
 
 
 \newcounter{lecnum}
@@ -100,7 +100,7 @@
 \section{Introduction}\label{intro}
 Experts in the Silicon Valley have said that we now live in a Golden Age of robotics, where high-quality hardware is both affordable and easily accessible. The developments of the past decade have enabled professionals and hobbyists alike to develop robotics from the comfort of their homes. This growth in the robotics industry is fortuitously bolstered by the existence of the Robot Operating System (ROS), a robust robotic development platform that will be introduced in this lecture.
 
-We will first look at brief history of ROS (Section \ref{history}), which will shed some light on motivation to develop a brand new robotics development platform from scratch, as well as its core values (Section \ref{characteristics}). Next we will look into the building blocks of ROS, namely the nodes, the master and the message types in ROS  (Section \ref{main_component}). Based on the comprehensive understanding of the skeleton of ROS, we will work a few examples with ROS that will give even more insights on the workings of ROS (Section \ref{programming}). Specifically, in our first example we will see interactions among different nodes by creating a publisher and a subscriber of example messages. Our second example will show how a simple ROS codes can easily integrate to an external framework (USB-operated camera) seamlessly (Section \ref{programming}). At the end of this chapter, we will explore Catkin, a build system for ROS to manage several components of ROS that can make ROS management much easier(Section \ref{development}). 
+We will first look at brief history of ROS (Section \ref{history}), which will shed some light on motivation to develop a brand new robotics development platform from scratch, as well as its core values (Section \ref{characteristics}). Next we will look into the building blocks of ROS, namely the nodes, the master and the message types in ROS  (Section \ref{main_component}). Based on the comprehensive understanding of the skeleton of ROS, we will work a few examples with ROS that will give even more insights on the workings of ROS (Section \ref{programming}). Specifically, in our first example we will see interactions among different nodes by creating a publisher and a subscriber of example messages. Our second example will show how a simple ROS codes can easily integrate to an external framework (USB-operated camera) seamlessly (Section \ref{programming}). At the end of this chapter, we will explore Catkin, a build system for ROS to manage several components of ROS that can make ROS management much easier(Section \ref{development}).
 
 %\subsection{Outline and Learning Objectives}
 
@@ -139,9 +139,9 @@ Until the advent of ROS, there existed no way for various robotics developers to
     \item The new software development platform should integrate a number of existing framekworks that were targeted at specific aspects of robotics (OpenCV, SLAM, Gazebo, etc)
 \end{itemize}
 
-Development of ROS started to gain tangible traction when Scott Hassan, a software architect and entrepreneur, founded a startup called Willow Garage to develop standardized robotics development platform in Menlo Park. 
+Development of ROS started to gain tangible traction when Scott Hassan, a software architect and entrepreneur, founded a startup called Willow Garage to develop standardized robotics development platform in Menlo Park.
 
-While mostly self-funded by the founder Scott Hassan himself due to its open-source nature, Willow Garage proved to have perfectly met the dire needs to build a standardized development environment for robotics projects. PR2 (Figure 2.1) was one of earliest humanoid robot on wheels that expedited development of ROS, which were awarded to 11 universities across the country for further collaboration on ROS development. 
+While mostly self-funded by the founder Scott Hassan himself due to its open-source nature, Willow Garage proved to have perfectly met the dire needs to build a standardized development environment for robotics projects. PR2 (Figure 2.1) was one of earliest humanoid robot on wheels that expedited development of ROS, which were awarded to 11 universities across the country for further collaboration on ROS development.
 Starting 2012, Open Source Robotics Foundation (OSRF) supervises the future of ROS by supporting development, distribution, and adoption of open software and hardware for use in robotics research, education, and product development. As of this day, ROS is 11yrs old and still maintained by the OSRF along with Gazebo, a virtual robotic simulator.
 \begin{figure}[ht]\label{fig:1}
 \centering
@@ -158,7 +158,7 @@ Despite what its name suggests, ROS is a middleware or framework rather than an 
 
 Although many of today's robotic platforms did not exist when Willow Garage was coming up with ROS, the developers were visionary enough to design the software to be compatible with any general robot - whether it be a flying quadcopter, a wheeled rover, or a bipedal humanoid. Early ROS developers learned that a powerful and efficient method to handle the complexity of robotic software could be accomplished using modules, as shown in Figure 2.2. This modularity takes the form of independent robotic components that perform separate functions and simplify the exchange of information. These components, called "nodes", share data with one another and act as the basic building blocks of ROS. Nodes can vary in function from sensor drivers at the low-level to even high-level tasks such as path planning with dynamic obstacle avoidance. Processing big data among nodes may cause CPU or GPU to be overwhelmed. To reduce computation on local computers, ROS is designed to be a network-aware application. To be specific, the software design pattern used to facilitate the message exchange between nodes is known as the Publish-Subscribe (Pub/Sub) model. Publishing means to send messages no matter whether there are listeners. Subscribing is to receive messages as long as there is a publisher. There are some alternatives to the Pub/Sub model, such as Request/Reply, Push/Pull, data binding, and observers. As far as within the context of this course, Pub/Sub is the communication framework that ROS relies on.
 
-Many other frameworks were created as "alternatives" of ROS. Some of these frameworks are Lightweight Communications and Marshalling (LCM), Drake, Player, YARP, Orocos, and MRPT. Despite the existance of other frameworks, ROS is the one closest to the industry standard. Meanwhile, it possesses the higher stability and various online resourses as described below. Thus, ROS is the choice in AA274. 
+Many other frameworks were created as "alternatives" of ROS. Some of these frameworks are Lightweight Communications and Marshalling (LCM), Drake, Player, YARP, Orocos, and MRPT. Despite the existance of other frameworks, ROS is the one closest to the industry standard. Meanwhile, it possesses the higher stability and various online resourses as described below. Thus, ROS is the choice in AA274.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=1\textwidth]{ModularityPhoto}
@@ -166,7 +166,7 @@ Many other frameworks were created as "alternatives" of ROS. Some of these frame
 \end{figure}
 
 \section{Main Components of ROS} \label{main_component}\label{sec:maincomponent}
-The three main components of ROS with the Pub/Sub programming model are the Nodes, the Master, and the Message Types. The nodes are responsible for publishing or subscribing to certain pieces of information that are shared within a virtual "chat room" called a topic. The publisher and subscriber nodes communicate with each other via these topics to perform their functions. A separate software called the master is a process that can run on any piece of hardware to coordinate the exchange between the publishers and subscribers. It is responsible for assigning network addresses to ensure that publishers and subscribers are connected to the correct topics, even if they are running on different computers. The information is securely exchanged using message types, which serve as a powerful abstraction away from specific pieces of hardware. Using message types, nodes can read certain data types (i.e. camera image, laser scan data, motion control) in the same way regardless of hardware brand or design. For instance, a LiDAR node and a mobile robot controller publishes laser scan arrays and odometry values respectively in two sensor message types. By subscribing these message types, a navigation node can receive the message sent from the sensors and send out corresponding motion control messages. 
+The three main components of ROS with the Pub/Sub programming model are the Nodes, the Master, and the Message Types. The nodes are responsible for publishing or subscribing to certain pieces of information that are shared within a virtual "chat room" called a topic. The publisher and subscriber nodes communicate with each other via these topics to perform their functions. A separate software called the master is a process that can run on any piece of hardware to coordinate the exchange between the publishers and subscribers. It is responsible for assigning network addresses to ensure that publishers and subscribers are connected to the correct topics, even if they are running on different computers. The information is securely exchanged using message types, which serve as a powerful abstraction away from specific pieces of hardware. Using message types, nodes can read certain data types (i.e. camera image, laser scan data, motion control) in the same way regardless of hardware brand or design. For instance, a LiDAR node and a mobile robot controller publishes laser scan arrays and odometry values respectively in two sensor message types. By subscribing these message types, a navigation node can receive the message sent from the sensors and send out corresponding motion control messages.
 
 \begin{frm-def}[Master]
 The master is a process that is in charge of coordinating nodes, publishers, and subscribers. There is exactly one running at any time. The master allows the nodes to find each other but is not used to send or receive messages.
@@ -222,7 +222,7 @@ Sample code for creating a publisher node named "talker" is given below. The top
 \begin{lstlisting}[language=python]
 import rospy
 from std_msgs.msg import String
-#std_msgs contain wrappers for ROS primitive types documented %*\href{http://wiki.ros.org/std_msgs}{here}%*. 
+#std_msgs contain wrappers for ROS primitive types documented %*\href{http://wiki.ros.org/std_msgs}{here}%*.
 #String is one of the primitive types available.
 
 def talker():
@@ -230,7 +230,7 @@ def talker():
     #create a node. 'talker' is the node name.
     #The anonymous=true setting allows the master to check whether that name exists
     #already on the network and appends characters to make the name unique.
-    #This is useful if you don't care about unique name for tools or GUIs, 
+    #This is useful if you don't care about unique name for tools or GUIs,
     #but unique names (anonymous=False) are important for nodes like drivers.
 
     pub.rospy.Publisher('chatter', String, queue_size=10)
@@ -340,19 +340,19 @@ The four nodes used in this edge detection example are summarized below in more 
 \begin{lstlisting}[language=XML]
 <launch>
     <arg name="video_device" default="/dev/video0" />
-   
+
     <!-- Launch USB cam driver -->
     <include file="$(find aa274)/launch/usbcam_driver.launch">
         <arg name="video_device" value="$(arg video_device)" />
     </include>
-   
+
     <!-- Create node to subscribe to colour image topic and view
     raw camera image in a window -->
     <node name="image_view_1" pkg="image_view" type="image_view">
         <remap from="image" to="/camera/image_color" />
         <param name="autosize" value="true"/>
     </node>
-    
+
     <!-- Create node to process output of edge detection node
     and view resultant image in a window -->
     <node name="image_view_2" pkg="image_view" type="image_view">
@@ -406,7 +406,7 @@ A msg file has the following structure: field type, field name
 
 An example is:
 \begin{verbatim}
-myp_ros/msg/SensorPacket.msg 
+myp_ros/msg/SensorPacket.msg
 time            stamp
 SensorData[]    sensors
 uint32          length
@@ -415,26 +415,26 @@ uint32          length
 In the following sections a few examples of message types belonging to common categories will be discussed. These categories are divided into diagnostic, navigation, geometry and sensor messages. These are just a selection of messages frequently used by other ROS packages, for a more comprehensive list refer to the \texttt{common$\_$msgs} documentation.
 
 
-\subsubsection{Diagnostic Messages} 
+\subsubsection{Diagnostic Messages}
 \textbf{GoalStatus}\newline
 Returns an integer indicating the status of a goal. Message can be adjusted to contain and send a number of goals using an array form of the message. Nine possible states; PENDING=0, ACTIVE=1, ... , RECALLED=8, LOST=9.
 \begin{verbatim}
-uint8, status  
+uint8, status
 \end{verbatim}
 %\vspace{-9pt}
 
 \textbf{DiagnosticStatus} \newline
 Message returns the status of a component within the robot, Possible states; OK=0, WARN=1, ERROR=2 and STALE=3. This message can also be extended to return the status of multiple components using an array version of the message.
 \begin{verbatim}
-byte level # level of operation 
+byte level # level of operation
 string name # a description of the test/component reporting
 string message # a description of the status
 string hardware_id # a hardware unique string
 KeyValue[] values # an array of values associated with the status
-\end{verbatim} 
+\end{verbatim}
 
 \textbf{KeyValue} \newline
-Used to track a value over time, during simulation. 
+Used to track a value over time, during simulation.
 \begin{verbatim}
 string key # what to label the value when viewing
 string value # value to track over time
@@ -454,7 +454,7 @@ geometry_msgs/Point[] cells
 \textbf{OccupancyGrid} \\
 This represents a 2-D grid map, in which each cell represents the probability of occupancy. The third line describes the map data, in row-major order, starting with (0,0). Occupancy probabilities are in the range [0,100]. Unknown is -1.
 \begin{verbatim}
-Header header 
+Header header
 MapMetaData info
 int8[] data
 \end{verbatim}
@@ -570,7 +570,7 @@ The ROS wiki is the official documentaion for ROS and is often the best source. 
 \newline
 GitHub, Stack Overflow, Youtube and Google
 \item \textbf{The Construct} (\href{https://www.youtube.com/channel/UCt6Lag-vv25fTX3e11mVY1Q}{link}) /\textbf{Robot Ignite Academy}(\url{http://www.theconstructsim.com})
-\newline 
+\newline
 The Robot Ignite Academy is a paid resource that features interactive online classes using simulated robots. However, The Construct is their Youtube channel that features many helpful videos.
 \end{itemize}
 
