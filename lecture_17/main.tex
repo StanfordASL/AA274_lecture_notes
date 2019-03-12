@@ -1,0 +1,86 @@
+\documentclass[twoside]{article}
+
+\usepackage[math]{kurier}
+\usepackage[sc]{mathpazo}
+\renewcommand{\sfdefault}{kurier}
+
+\usepackage[boxruled]{algorithm2e}
+\usepackage[utf8]{inputenc}
+\usepackage[backend=biber]{biblatex}
+\usepackage[english]{babel}
+\usepackage[english]{babel}
+\usepackage[autostyle]{csquotes}
+\usepackage{placeins}
+\usepackage[backend=biber]{biblatex}
+\bibliography{./lecture_17_biblio.bib}
+
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{float}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+
+
+\newcommand{\lecture}[3]{
+   \pagestyle{myheadings}
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{lecnum}{#1}
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {\bf \sffamily AA 274: Principles of Robotic Autonomy
+                        \hfill Winter 2019} }
+       \vspace{4mm}
+       \hbox to 6.28in { {\sffamily{\Large \hfill Lecture #1: #2  \hfill}} }
+       \vspace{2mm}
+       % \hbox to 6.28in { {\it \hfill Scribes: #4} }
+      \vspace{2mm}}
+   }
+   \end{center}
+   \markboth{Lecture #1: #2}{Lecture #1: #2}
+
+   \vspace*{4mm}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%document
+\begin{document}
+%modify this
+\lecture{17}{Decision Making and Dynamic Programming}{}
+
+\section{Introduction}
+
+%% ---
+% ADD NOTES HERE
+
+
+
+%% ---
+
+\printbibliography
+
+\subsubsection*{Contributors}
+Winter 2019: [Your Names Here] \\
+Winter 2018: Scott Park, Adrian Piedra, Garrett Scott Taylor, Matthew Wu Tsao and Michal Adamkiewicz
+
+\end{document}
